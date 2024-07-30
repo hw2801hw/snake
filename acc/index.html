@@ -1,0 +1,129 @@
+<!-- app.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>註冊和登入系統</title>
+    <style>
+        /* CSS樣式 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 400px;
+            margin: 0 auto;
+            margin-top: 50px;
+        }
+        
+        input[type=text], input[type=password] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>註冊</h2>
+        <form id="register-form">
+            <label for="username">用戶名:</label>
+            <input type="text" id="username" name="username" placeholder="輸入用戶名" required>
+            
+            <label for="password">密碼:</label>
+            <input type="password" id="password" name="password" placeholder="輸入密碼" required>
+            
+            <button type="submit">註冊</button>
+        </form>
+        
+        <h2>登入</h2>
+        <form id="login-form">
+            <label for="login-username">用戶名:</label>
+            <input type="text" id="login-username" name="login-username" placeholder="輸入用戶名" required>
+            
+            <label for="login-password">密碼:</label>
+            <input type="password" id="login-password" name="login-password" placeholder="輸入密碼" required>
+            
+            <button type="submit">登入</button>
+        </form>
+    </div>
+    
+    <script>
+        // JavaScript代碼
+        document.getElementById('register-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            
+            // 發送POST請求到Flask後端
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({username: username, password: password})
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    alert('註冊成功!');
+                } else {
+                    alert('註冊失敗,請重試。');
+                }
+            })
+            .catch(function(error) {
+                console.error('錯誤:', error);
+                alert('發生錯誤,請稍後再試。');
+            });
+        });
+        
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var username = document.getElementById('login-username').value;
+            var password = document.getElementById('login-password').value;
+            
+            // 發送POST請求到Flask後端
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({username: username, password: password})
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    alert('登入成功!');
+                } else {
+                    alert('登入失敗,請重試。');
+                }
+            })
+            .catch(function(error) {
+                console.error('錯誤:', error);
+                alert('發生錯誤,請稍後再試。');
+            });
+        });
+    </script>
+</body>
+</html>
