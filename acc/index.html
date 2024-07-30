@@ -1,23 +1,25 @@
-<!-- app.html -->
 <!DOCTYPE html>
 <html>
 <head>
     <title>註冊和登入系統</title>
     <style>
-        /* CSS樣式 */
+        /* CSS 樣式 */
         body {
             font-family: Arial, sans-serif;
             background-color: #f2f2f2;
         }
         
         .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             max-width: 400px;
             margin: 0 auto;
-            margin-top: 50px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
         }
         
         input[type=text], input[type=password] {
@@ -48,82 +50,76 @@
 </head>
 <body>
     <div class="container">
+        <h1>註冊和登入系統</h1>
+        
         <h2>註冊</h2>
-        <form id="register-form">
-            <label for="username">用戶名:</label>
-            <input type="text" id="username" name="username" placeholder="輸入用戶名" required>
-            
-            <label for="password">密碼:</label>
-            <input type="password" id="password" name="password" placeholder="輸入密碼" required>
-            
-            <button type="submit">註冊</button>
-        </form>
+        <input type="text" id="register-username" placeholder="用戶名">
+        <input type="password" id="register-password" placeholder="密碼">
+        <button onclick="register()">註冊</button>
         
         <h2>登入</h2>
-        <form id="login-form">
-            <label for="login-username">用戶名:</label>
-            <input type="text" id="login-username" name="login-username" placeholder="輸入用戶名" required>
-            
-            <label for="login-password">密碼:</label>
-            <input type="password" id="login-password" name="login-password" placeholder="輸入密碼" required>
-            
-            <button type="submit">登入</button>
-        </form>
+        <input type="text" id="login-username" placeholder="用戶名">
+        <input type="password" id="login-password" placeholder="密碼">
+        <button onclick="login()">登入</button>
     </div>
     
     <script>
-        // JavaScript代碼
-        document.getElementById('register-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            var username = document.getElementById('username').value;
-            var password = document.getElementById('password').value;
+        // JavaScript 功能
+        function register() {
+            var username = document.getElementById('register-username').value;
+            var password = document.getElementById('register-password').value;
             
-            // 發送POST請求到Flask後端
-            fetch('/register', {
+            fetch('/index', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({username: username, password: password})
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
             })
-            .then(function(response) {
-                if (response.ok) {
-                    alert('註冊成功!');
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
                 } else {
-                    alert('註冊失敗,請重試。');
+                    alert(data.message);
                 }
             })
-            .catch(function(error) {
-                console.error('錯誤:', error);
-                alert('發生錯誤,請稍後再試。');
+            .catch(error => {
+                console.error('Error:', error);
+                alert('發生錯誤,請重試');
             });
-        });
+        }
         
-        document.getElementById('login-form').addEventListener('submit', function(event) {
-            event.preventDefault();
+        function login() {
             var username = document.getElementById('login-username').value;
             var password = document.getElementById('login-password').value;
             
-            // 發送POST請求到Flask後端
-            fetch('/login', {
+            fetch('/index', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({username: username, password: password})
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
             })
-            .then(function(response) {
-                if (response.ok) {
-                    alert('登入成功!');
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
                 } else {
-                    alert('登入失敗,請重試。');
+                    alert(data.message);
                 }
             })
-            .catch(function(error) {
-                console.error('錯誤:', error);
-                alert('發生錯誤,請稍後再試。');
+            .catch(error => {
+                console.error('Error:', error);
+                alert('發生錯誤,請重試');
             });
-        });
+        }
     </script>
 </body>
 </html>
