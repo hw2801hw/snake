@@ -1,125 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>註冊和登入系統</title>
-    <style>
-        /* CSS 樣式 */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-        }
-        
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        h1 {
-            text-align: center;
-        }
-        
-        input[type=text], input[type=password] {
-            width: 100%;
-            padding: 12px 20px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-        }
-        
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In</title>
+  <link rel="stylesheet" href="app.css">
 </head>
 <body>
-    <div class="container">
-        <h1>註冊和登入系統</h1>
-        
-        <h2>註冊</h2>
-        <input type="text" id="register-username" placeholder="用戶名">
-        <input type="password" id="register-password" placeholder="密碼">
-        <button onclick="register()">註冊</button>
-        
-        <h2>登入</h2>
-        <input type="text" id="login-username" placeholder="用戶名">
-        <input type="password" id="login-password" placeholder="密碼">
-        <button onclick="login()">登入</button>
-    </div>
+  <div class="container">
+    <h2 id="pageTitle">Sign In</h2>
+    <form id="signin-form">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" placeholder="Enter username" required>
+      
+      <label for="password">Password:</label>
+      <div class="password-container">
+        <input type="password" id="password" name="password" placeholder="Enter password" required>
+        <button type="button" class="password-toggle-btn">
+          <i class="fas fa-eye"></i>
+        </button>
+      </div>
+      
+      <button type="submit">Sign In</button>
+    </form>
     
-    <script>
-        // JavaScript 功能
-        function register() {
-            var username = document.getElementById('register-username').value;
-            var password = document.getElementById('register-password').value;
-            
-            fetch('/index', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username: username,
-                    password: password
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('發生錯誤,請重試');
-            });
-        }
-        
-        function login() {
-            var username = document.getElementById('login-username').value;
-            var password = document.getElementById('login-password').value;
-            
-            fetch('/index', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username: username,
-                    password: password
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('發生錯誤,請重試');
-            });
-        }
-    </script>
+    <p id="register-link">Don't have an account? <a href="#" onclick="showRegisterForm()">Register</a></p>
+  </div>
+  
+  <div class="container" id="register-container" style="display:none;">
+    <h2 id="pageTitle">Register</h2>
+    <form id="register-form">
+      <label for="new-username">Username:</label>
+      <input type="text" id="new-username" name="new-username" placeholder="Enter new username" required>
+      
+      <label for="new-password">Password:</label>
+      <div class="password-container">
+        <input type="password" id="new-password" name="new-password" placeholder="Enter new password" required>
+        <button type="button" class="password-toggle-btn">
+          <i class="fas fa-eye"></i>
+        </button>
+      </div>
+      
+      <button type="submit">Register</button>
+    </form>
+    
+    <p>Already have an account? <a href="#" onclick="showSigninForm()">Sign In</a></p>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <!-- Font Awesome for password toggle icon -->
+  <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
+
+  <script src="app.js"></script>
 </body>
 </html>
