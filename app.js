@@ -37,7 +37,7 @@ signinForm.addEventListener('submit', (event) => {
 
   firebase.database().ref('users/' + username).once('value', (snapshot) => {
     if (snapshot.exists() && snapshot.val().password === password) {
-      location.replace("https://hw2801hw.github.io/snake/");
+      location.replace("https://hw2801hw.github.io/snake/snake");
     } else {
       alert('Invalid username or password.');
     }
