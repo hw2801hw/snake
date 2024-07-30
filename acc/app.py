@@ -1,58 +1,51 @@
-import os
-import json
+# app.py
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+import json
 
 app = Flask(__name__)
-CORS(app)
 
-# 設置 users.json 文件的路徑
-users_file = 'users.json'
+# 載入用戶數據
+with open('users.json', 'r') as f:
+    users = json.load(f)
+
+@app.route('/')
+def index():
+    return app.send_static_file('app.html')
 
 @app.route('/register', methods=['POST'])
-def register_user():
+def register():
     data = request.get_json()
     username = data['username']
     password = data['password']
-
-    # 讀取 users.json 文件中的用戶列表
-    if os.path.exists(users_file):
-        with open(users_file, 'r') as f:
-            users = json.load(f)
-    else:
-        users = {}
-
-    # 檢查用戶是否已經註冊
+    
+    # 檢查用戶名是否已被註冊
     if username in users:
-        return jsonify({'message': 'Username already exists'}), 400
-
-    # 將新用戶信息添加到用戶列表中
-    users[username] = password
-
-    # 將更新後的用戶列表保存到 users.json 文件
-    with open(users_file, 'w') as f:
+        return jsonify({'error': '用戶名已被註冊'}), 400
+    
+    # 新增用戶
+    users[username] = {'password': password}
+    
+    # 保存用戶數據到JSON文件
+    with open('users.json', 'w') as f:
         json.dump(users, f)
-
-    return jsonify({'message': 'User registered successfully'})
+    
+    return jsonify({'message': '註冊成功'})
 
 @app.route('/login', methods=['POST'])
-def login_user():
+def login():
     data = request.get_json()
     username = data['username']
     password = data['password']
-
-    # 讀取 users.json 文件中的用戶列表
-    if os.path.exists(users_file):
-        with open(users_file, 'r') as f:
-            users = json.load(f)
-    else:
-        return jsonify({'message': 'Invalid username or password'}), 401
-
-    # 檢查用戶是否存在且密碼是否正確
-    if username in users and users[username] == password:
-        return jsonify({'message': 'Login successful', 'username': username})
-    else:
-        return jsonify({'message': 'Invalid username or password'}), 401
+    
+    # 檢查用戶是否存在
+    if username not in users:
+        return jsonify({'error': '用戶不存在'}), 400
+    
+    # 檢查密碼是否正確
+    if users[username]['password'] != password:
+        return jsonify({'error': '密碼錯誤'}), 400
+    
+    return jsonify({'message': '登入成功'})
 
 if __name__ == '__main__':
     app.run(debug=True)
