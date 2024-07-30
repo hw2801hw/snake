@@ -3,123 +3,106 @@
 <head>
   <title>Login/Register</title>
   <style>
-    /* CSS styles */
+    /* CSS styles go here */
     body {
       font-family: Arial, sans-serif;
-      background-color: #f1f1f1;
+      background-color: #f2f2f2;
       padding: 20px;
     }
-
+    
     .container {
       background-color: white;
       padding: 20px;
       border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
       max-width: 400px;
       margin: 0 auto;
     }
-
-    #pageTitle {
+    
+    h1 {
       text-align: center;
+      margin-bottom: 20px;
     }
-
-    input[type=text], input[type=password] {
-      width: 100%;
-      padding: 12px 20px;
-      margin: 8px 0;
-      display: inline-block;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
+    
+    .form-group {
+      margin-bottom: 20px;
     }
-
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 14px 20px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    button:hover {
-      background-color: #45a049;
-    }
-
+    
     .password-container {
       position: relative;
     }
-
+    
     .password-toggle-btn {
       position: absolute;
       top: 50%;
       right: 10px;
       transform: translateY(-50%);
-      background-color: transparent;
-      border: none;
       cursor: pointer;
-      width: 24px;
-      height: 24px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
-
-    .password-toggle-btn i {
-      color: #999;
-      font-size: 16px;
+    
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
-
-    #register-link {
-      text-align: center;
+    
+    button:hover {
+      background-color: #45a049;
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <h1 id="pageTitle">Register</h1>
     <div id="register-container">
-      <h1 id="pageTitle">Register</h1>
       <form id="register-form">
-        <input type="text" id="new-username" placeholder="Username" required>
-        <div class="password-container">
-          <input type="password" id="new-password" placeholder="Password" required>
-          <button type="button" class="password-toggle-btn">
+        <div class="form-group">
+          <label for="new-username">Username:</label>
+          <input type="text" id="new-username" required>
+        </div>
+        <div class="form-group password-container">
+          <label for="new-password">Password:</label>
+          <input type="password" id="new-password" required>
+          <span class="password-toggle-btn">
             <i class="fa fa-eye"></i>
-          </button>
+          </span>
         </div>
         <button type="submit">Register</button>
       </form>
-      <div id="register-link">
-        <a href="#" onclick="showSigninForm()">Already have an account? Sign In</a>
-      </div>
     </div>
     <div id="signin-form" style="display: none;">
-      <h1 id="pageTitle">Sign In</h1>
       <form id="signin-form">
-        <input type="text" id="username" placeholder="Username" required>
-        <div class="password-container">
-          <input type="password" id="password" placeholder="Password" required>
-          <button type="button" class="password-toggle-btn">
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" required>
+        </div>
+        <div class="form-group password-container">
+          <label for="password">Password:</label>
+          <input type="password" id="password" required>
+          <span class="password-toggle-btn">
             <i class="fa fa-eye"></i>
-          </button>
+          </span>
         </div>
         <button type="submit">Sign In</button>
       </form>
-      <div id="register-link">
-        <a href="#" onclick="showRegisterForm()">Don't have an account? Register</a>
-      </div>
+    </div>
+    <div id="register-link" style="text-align: center; margin-top: 20px;">
+      <a href="#" onclick="showRegisterForm(); return false;">Don't have an account? Register</a>
     </div>
   </div>
 
-  <!-- Include Font Awesome for the password toggle icon -->
+  <!-- Include FontAwesome for the password toggle icon -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
   <!-- Include Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 
-  <script src="script.js"></script>
+  <!-- Include the modified app.js file -->
+  <script src="app.js"></script>
 </body>
 </html>
