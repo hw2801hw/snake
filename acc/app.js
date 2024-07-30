@@ -3,7 +3,6 @@ const firebaseConfig = {
   apiKey: "AIzaSyBSPDVNF9jB2Pg8hI0kjj9wIQvitm-RlRc",
   databaseURL: "https://games-99bce-default-rtdb.firebaseio.com"
 };
-
 firebase.initializeApp(firebaseConfig);
 
 // Get references to the forms
@@ -74,7 +73,7 @@ function showRegisterForm() {
   document.getElementById('register-container').style.display = 'block';
   document.getElementById('signin-form').style.display = 'none';
   document.getElementById('pageTitle').textContent = 'Register';
-  document.getElementById('register-link').style.display = 'none';
+  document.getElementById('register-link').style.display = 'block';
 }
 
 function showSigninForm() {
@@ -83,3 +82,6 @@ function showSigninForm() {
   document.getElementById('pageTitle').textContent = 'Sign In';
   document.getElementById('register-link').style.display = 'block';
 }
+
+// Show the register form by default
+showRegisterForm();
