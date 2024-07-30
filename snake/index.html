@@ -56,51 +56,18 @@
       padding: 5px 10px;
     }
   </style>
-
-  <script>
-    // JavaScript code for the Snake game
-    let gameBoard, snake, food, score, gameInterval, gameSpeed = 1;
-
-    function startGame() {
-      // Game initialization code
-    }
-
-    function updateGame() {
-      // Game logic and rendering
-    }
-
-    function restartGame() {
-      // Reset game state
-    }
-
-    function doubleSpeed() {
-      // Double the game speed
-      gameSpeed = 2;
-    }
-
-    function quadSpeed() {
-      // Quadruple the game speed
-      gameSpeed = 4;
-    }
-
-    // Event listeners for buttons
-    document.getElementById('restart-button').addEventListener('click', restartGame);
-    document.getElementById('double-speed-button').addEventListener('click', doubleSpeed);
-    document.getElementById('quad-speed-button').addEventListener('click', quadSpeed);
-
-    // Start the game
-    startGame();
-  </script>
 </head>
 <body>
   <div>
+    <h1>貪吃蛇遊戲</h1>
+    <div id="score">分數: 0</div>
     <div id="game-board"></div>
-    <div id="score">Score: 0</div>
     <div id="buttons">
       <button id="restart-button">Restart</button>
       <button id="double-speed-button">Double Speed</button>
       <button id="quad-speed-button">Quad Speed</button>
     </div>
   </div>
+  <script src="script.js"></script>
 </body>
 </html>
