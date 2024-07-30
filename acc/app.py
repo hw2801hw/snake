@@ -4,10 +4,6 @@ import json
 
 app = Flask(__name__)
 
-# 載入用戶數據
-with open('users.json', 'r') as f:
-    users = json.load(f)
-
 @app.route('/')
 def index():
     return app.send_static_file('app.html')
@@ -18,7 +14,9 @@ def register():
     username = data['username']
     password = data['password']
     
-    # 檢查用戶名是否已被註冊
+    # 檢查用戶是否已經存在
+    with open('users.json', 'r') as f:
+        users = json.load(f)
     if username in users:
         return jsonify({'error': '用戶名已被註冊'}), 400
     
@@ -38,6 +36,8 @@ def login():
     password = data['password']
     
     # 檢查用戶是否存在
+    with open('users.json', 'r') as f:
+        users = json.load(f)
     if username not in users:
         return jsonify({'error': '用戶不存在'}), 400
     
