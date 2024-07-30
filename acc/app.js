@@ -37,7 +37,7 @@ signinForm.addEventListener('submit', (event) => {
 
   firebase.database().ref('users/' + username).once('value', (snapshot) => {
     if (snapshot.exists() && snapshot.val().password === password) {
-      alert(`Hello ${username}!`);
+      location.replace("https://hw2801hw.github.io/snake/");
     } else {
       alert('Invalid username or password.');
     }
@@ -84,4 +84,4 @@ function showSigninForm() {
 }
 
 // Show the register form by default
-showRegisterForm();
+showSigninForm();
