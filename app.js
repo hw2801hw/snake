@@ -9,7 +9,7 @@ firebase.initializeApp(firebaseConfig);
 const signinForm = document.getElementById('signin-form');
 const registerForm = document.getElementById('register-form');
 
-// Handle password toggle
+// Handle password toggl
 const passwordInputs = document.querySelectorAll('.password-container input[type="password"]');
 const passwordToggleBtns = document.querySelectorAll('.password-toggle-btn');
 
