@@ -1,108 +1,87 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Login/Register</title>
-  <style>
-    /* CSS styles go here */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
-      padding: 20px;
-    }
-    
-    .container {
-      background-color: white;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    
-    .form-group {
-      margin-bottom: 20px;
-    }
-    
-    .password-container {
-      position: relative;
-    }
-    
-    .password-toggle-btn {
-      position: absolute;
-      top: 50%;
-      right: 10px;
-      transform: translateY(-50%);
-      cursor: pointer;
-    }
-    
-    button {
-      width: 100%;
-      padding: 10px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    
-    button:hover {
-      background-color: #45a049;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1 id="pageTitle">Register</h1>
-    <div id="register-container">
-      <form id="register-form">
-        <div class="form-group">
-          <label for="new-username">Username:</label>
-          <input type="text" id="new-username" required>
-        </div>
-        <div class="form-group password-container">
-          <label for="new-password">Password:</label>
-          <input type="password" id="new-password" required>
-          <span class="password-toggle-btn">
-            <i class="fa fa-eye"></i>
-          </span>
-        </div>
-        <button type="submit">Register</button>
-      </form>
-    </div>
-    <div id="signin-form" style="display: none;">
-      <form id="signin-form">
-        <div class="form-group">
-          <label for="username">Username:</label>
-          <input type="text" id="username" required>
-        </div>
-        <div class="form-group password-container">
-          <label for="password">Password:</label>
-          <input type="password" id="password" required>
-          <span class="password-toggle-btn">
-            <i class="fa fa-eye"></i>
-          </span>
-        </div>
-        <button type="submit">Sign In</button>
-      </form>
-    </div>
-    <div id="register-link" style="text-align: center; margin-top: 20px;">
-      <a href="#" onclick="showRegisterForm(); return false;">Don't have an account? Register</a>
-    </div>
-  </div>
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyBSPDVNF9jB2Pg8hI0kjj9wIQvitm-RlRc",
+  databaseURL: "https://games-99bce-default-rtdb.firebaseio.com"
+};
+firebase.initializeApp(firebaseConfig);
 
-  <!-- Include FontAwesome for the password toggle icon -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+// Get references to the forms
+const signinForm = document.getElementById('signin-form');
+const registerForm = document.getElementById('register-form');
 
-  <!-- Include Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+// Handle password toggle
+const passwordInputs = document.querySelectorAll('.password-container input[type="password"]');
+const passwordToggleBtns = document.querySelectorAll('.password-toggle-btn');
 
-  <!-- Include the modified app.js file -->
-  <script src="app.js"></script>
-</body>
-</html>
+passwordToggleBtns.forEach((btn, index) => {
+  btn.addEventListener('click', () => {
+    const passwordInput = passwordInputs[index];
+    const icon = btn.querySelector('i');
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
+    } else {
+      passwordInput.type = 'password';
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
+    }
+  });
+});
+
+// Handle sign-in
+signinForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  firebase.database().ref('users/' + username).once('value', (snapshot) => {
+    if (snapshot.exists() && snapshot.val().password === password) {
+      alert(`Hello ${username}!`);
+    } else {
+      alert('Invalid username or password.');
+    }
+  });
+});
+
+// Handle registration
+registerForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const newUsername = document.getElementById('new-username').value;
+  const newPassword = document.getElementById('new-password').value;
+
+  // Check if the username already exists
+  firebase.database().ref('users/' + newUsername).once('value', (snapshot) => {
+    if (snapshot.exists()) {
+      alert('Username already exists. Please choose a different username.');
+    } else {
+      firebase.database().ref('users/' + newUsername).set({
+        username: newUsername,
+        password: newPassword
+      }).then(() => {
+        alert('Registration successful! Please sign in.');
+        showSigninForm();
+      }).catch((error) => {
+        alert('Error registering user: ' + error.message);
+      });
+    }
+  });
+});
+
+// Helper functions
+function showRegisterForm() {
+  document.getElementById('register-container').style.display = 'block';
+  document.getElementById('signin-form').style.display = 'none';
+  document.getElementById('pageTitle').textContent = 'Register';
+  document.getElementById('register-link').style.display = 'none';
+}
+
+function showSigninForm() {
+  document.getElementById('register-container').style.display = 'none';
+  document.getElementById('signin-form').style.display = 'block';
+  document.getElementById('pageTitle').textContent = 'Sign In';
+  document.getElementById('register-link').style.display = 'block';
+}
+
+// Show the register form by default
+showRegisterForm();
