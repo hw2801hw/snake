@@ -1,5 +1,5 @@
 // Initialize Firebase
-const firebaseConfig = {
+const firebaseConfig = {1
   apiKey: "AIzaSyBSPDVNF9jB2Pg8hI0kjj9wIQvitm-RlRc",
   databaseURL: "https://games-99bce-default-rtdb.firebaseio.com"
 };
