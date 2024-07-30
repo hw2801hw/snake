@@ -80,7 +80,7 @@ function showSigninForm() {
   document.getElementById('register-container').style.display = 'none';
   document.getElementById('signin-form').style.display = 'block';
   document.getElementById('pageTitle').textContent = 'Sign In';
-  document.getElementById('register-link').style.display = 'block';
+  document.getElementById('register-link').style.display = 'none';
 }
 
 // Show the register form by default
