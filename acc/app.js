@@ -73,7 +73,7 @@ function showRegisterForm() {
   document.getElementById('register-container').style.display = 'block';
   document.getElementById('signin-form').style.display = 'none';
   document.getElementById('pageTitle').textContent = 'Register';
-  document.getElementById('register-link').style.display = 'none';
+  document.getElementById('register-link').style.display = 'block';
 }
 
 function showSigninForm() {
