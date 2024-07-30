@@ -84,4 +84,4 @@ function showRegisterForm() {
 }
 
 // Show the register form by default
-showRegisterForm();
+showSigninForm();
