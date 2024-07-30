@@ -83,5 +83,5 @@ function showRegisterForm() {
   document.getElementById('register-link').style.display = 'block';
 }
 
-// Show the register form by default
+// Show the Singnin form by default
 showSigninForm();
