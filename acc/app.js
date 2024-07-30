@@ -71,16 +71,17 @@ registerForm.addEventListener('submit', (event) => {
 // Helper functions
 function showSigninForm() {
   document.getElementById('register-container').style.display = 'block';
-  document.getElementById('signin-form').style.display = 'none';
+  document.getElementById('signin-form').style.display = 'block';
   document.getElementById('pageTitle').textContent = 'Sign In';
   document.getElementById('register-link').style.display = 'none';
 }
+
 function showRegisterForm() {
-  document.getElementById('register-container').style.display = 'none';
-  document.getElementById('signin-form').style.display = 'block';
+  document.getElementById('register-container').style.display = 'block';
+  document.getElementById('signin-form').style.display = 'none';
   document.getElementById('pageTitle').textContent = 'Register';
   document.getElementById('register-link').style.display = 'block';
 }
 
 // Show the register form by default
-showSigninForm();
+showRegisterForm();
