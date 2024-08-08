@@ -96,13 +96,14 @@
     <h1>Snake Game</h1>
       <div id="game-board"></div>
     <div id="score-container">
+      <h2>Name: <span id="username">0</span></h2>
       <h2>Score: <span id="score">0</span></h2>
       <h2>High Score: <span id="high-score">0</span></h2>
     </div>
     <div id="button-container">
       <button id="restart-button">Restart</button>
       <button id="double-speed-button">Double Speed</button>
-      <button id="quad-speed-button">Quad Speed</button>
+      <button id="penta-speed-button">Quad Speed</button>
     </div>
     <div id="leaderboard-container">
       <h2>Leaderboard</h2>
@@ -118,8 +119,183 @@
       </table>
     </div>
   </div>
-  <script src="script.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
-<</body>
+
+  <script>
+    // Initialize Firebase (if available)
+    let firebaseInitialized = false;
+    try {
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSPDVNF9jB2Pg8hI0kjj9wIQvitm-RlRc",
+            databaseURL: "https://games-99bce-default-rtdb.firebaseio.com"
+        };
+        firebase.initializeApp(firebaseConfig);
+        firebaseInitialized = true;
+    } catch (error) {
+        console.error("Firebase initialization error:", error);
+    }
+
+    // 取得DOM元素
+    const gameBoard = document.getElementById('game-board');
+    const nameDisplay = document.getElementById('username');
+    const scoreDisplay = document.getElementById('score');
+    const highScoreDisplay = document.getElementById('high-score');
+    const restartButton = document.getElementById('restart-button');
+    const doubleSpeedButton = document.getElementById('double-speed-button');
+    const pentaSpeedButton = document.getElementById('penta-speed-button');
+
+    let snake = [[3, 3]];
+    let food = [Math.floor(Math.random() * 7), Math.floor(Math.random() * 7)];
+    let direction = 'right';
+    let score = 0;
+    let highScore = 0;
+    let gameInterval;
+    let speed = 1000; // 一秒一格
+
+    // 確保Firebase初始化成功
+    if (firebaseInitialized) {
+        // 取得或創建使用者的最高分紀錄
+        let username = sessionStorage.getItem('username') || 'Guest';
+        nameDisplay.textContent = username;
+        const userRef = firebase.database().ref(`users/${username}/highScore`);
+        userRef.once('value', (snapshot) => {
+            if (snapshot.exists()) {
+                // 如果使用者已存在紀錄,將分數設置為0
+                userRef.set(0);
+                highScore = 0;
+                highScoreDisplay.textContent = `${highScore}`;
+            } else {
+                highScore = snapshot.val();
+                highScoreDisplay.textContent = `${highScore}`;
+            }
+        });
+
+        // 在Game Over時更新分數
+        function gameOver() {
+            clearInterval(gameInterval);
+            userRef.set(score).then(() => {
+                if (score > highScore) {
+                    highScore = score;
+                    highScoreDisplay.textContent = `${highScore}`;
+                    alert(`Game Over! Your new high score is ${score}.`);
+                } else {
+                    alert(`Game Over! Your score is ${Score}.`);
+                }
+            }).catch((error) => {
+                console.error("Error updating score:", error);
+                alert(`Game Over! Your high score is ${highScore}.`);
+            });
+        }
+    } else {
+        // 如果Firebase初始化失敗,使用本地記錄
+        highScoreDisplay.textContent = `${highScore}`;
+
+        function gameOver() {
+            clearInterval(gameInterval);
+            alert(`Game Over! Your high score is ${highScore}.`);
+        }
+    }
+
+    function drawBoard() {
+        gameBoard.innerHTML = '';
+        for (let i = 0; i < 49; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('game-cell');
+            cell.style.gridColumn = `${(i % 7) + 1} / span 1`;
+            cell.style.gridRow = `${Math.floor(i / 7) + 1} / span 1`;
+            gameBoard.appendChild(cell);
+        }
+
+        snake.forEach((part, index) => {
+            const snakePart = document.createElement('div');
+            snakePart.classList.add(index === 0 ? 'snake-head' : 'snake-body', 'game-cell');
+            snakePart.style.gridColumn = `${part[0] + 1} / span 1`;
+            snakePart.style.gridRow = `${part[1] + 1} / span 1`;
+            gameBoard.appendChild(snakePart);
+        });
+
+        const foodElement = document.createElement('div');
+        foodElement.classList.add('food', 'game-cell');
+        foodElement.style.gridColumn = `${food[0] + 1} / span 1`;
+        foodElement.style.gridRow = `${food[1] + 1} / span 1`;
+        gameBoard.appendChild(foodElement);
+    }
+
+    function moveSnake() {
+        const head = [...snake[0]];
+        switch (direction) {
+            case 'up':
+                head[1]--;
+                break;
+            case 'down':
+                head[1]++;
+                break;
+            case 'left':
+                head[0]--;
+                break;
+            case 'right':
+                head[0]++;
+                break;
+        }
+
+        if (head[0] < 0 || head[0] >= 7 || head[1] < 0 || head[1] >= 7 || snake.some(part => part[0] === head[0] && part[1] === head[1])) {
+            gameOver();
+            return;
+        }
+
+        snake.unshift(head);
+        if (head[0] === food[0] && head[1] === food[1]) {
+            score++;
+            scoreDisplay.textContent = `${score}`;
+            food = [Math.floor(Math.random() * 7), Math.floor(Math.random() * 7)];
+        } else {
+            snake.pop();
+        }
+
+        drawBoard();
+    }
+
+    document.addEventListener('keydown', (event) => {
+        switch (event.key) {
+            case 'ArrowUp':
+                if (direction !== 'down') direction = 'up';
+                break;
+            case 'ArrowDown':
+                if (direction !== 'up') direction = 'down';
+                break;
+            case 'ArrowLeft':
+                if (direction !== 'right') direction = 'left';
+                break;
+            case 'ArrowRight':
+                if (direction !== 'left') direction = 'right';
+                break;
+        }
+    });
+
+    restartButton.addEventListener('click', () => {
+        clearInterval(gameInterval);
+        snake = [[3, 3]];
+        food = [Math.floor(Math.random() * 7), Math.floor(Math.random() * 7)];
+        direction = 'right';
+        score = 0;
+        scoreDisplay.textContent = `${score}`;
+        gameInterval = setInterval(moveSnake, speed);
+    });
+
+    doubleSpeedButton.addEventListener('click', () => {
+        clearInterval(gameInterval);
+        speed = 500; // 一秒兩格
+        gameInterval = setInterval(moveSnake, speed);
+    });
+
+    pentaSpeedButton.addEventListener('click', () => {
+        clearInterval(gameInterval);
+        speed = 200; // 一秒五格
+        gameInterval = setInterval(moveSnake, speed);
+    });
+
+    gameInterval = setInterval(moveSnake, speed);
+  </script>
+</body>
 </html>
