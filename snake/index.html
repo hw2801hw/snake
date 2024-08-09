@@ -155,46 +155,49 @@
 
     // 確保Firebase初始化成功
     if (firebaseInitialized) {
-        // 取得或創建使用者的最高分紀錄
+      // 取得或創建使用者的最高分紀錄
+      window.addEventListener('DOMContentLoaded', () => {
         let username = sessionStorage.getItem('username') || 'Guest';
         nameDisplay.textContent = username;
+
         const userRef = firebase.database().ref(`users/${username}/highScore`);
         userRef.once('value', (snapshot) => {
-            if (snapshot.exists()) {
-                // 如果使用者已存在紀錄,將分數設置為0
-                userRef.set(0);
-                highScore = 0;
-                highScoreDisplay.textContent = `${highScore}`;
-            } else {
-                highScore = snapshot.val();
-                highScoreDisplay.textContent = `${highScore}`;
-            }
+          if (snapshot.exists()) {
+            highScore = snapshot.val();
+            highScoreDisplay.textContent = `${highScore}`;
+          } else {
+            // 如果使用者不存在紀錄,將最高分設置為0
+            userRef.set(0);
+            highScore = 0;
+            highScoreDisplay.textContent = `${highScore}`;
+          }
         });
+      });
 
-        // 在Game Over時更新分數
-        function gameOver() {
-            clearInterval(gameInterval);
-            userRef.set(score).then(() => {
-                if (score > highScore) {
-                    highScore = score;
-                    highScoreDisplay.textContent = `${highScore}`;
-                    alert(`Game Over! Your new high score is ${score}.`);
-                } else {
-                    alert(`Game Over! Your high score is ${highScore}.`);
-                }
-            }).catch((error) => {
-                console.error("Error updating score:", error);
-                alert(`Game Over! Your high score is ${highScore}.`);
-            });
-        }
-    } else {
-        // 如果Firebase初始化失敗,使用本地記錄
-        highScoreDisplay.textContent = `${highScore}`;
-
-        function gameOver() {
-            clearInterval(gameInterval);
+      // 在Game Over時更新分數
+      function gameOver() {
+        clearInterval(gameInterval);
+        if (score > highScore) {
+          userRef.set(score).then(() => {
+            highScore = score;
+            highScoreDisplay.textContent = `${highScore}`;
+            alert(`Game Over! Your new high score is ${score}.`);
+          }).catch((error) => {
+            console.error("Error updating score:", error);
             alert(`Game Over! Your high score is ${highScore}.`);
+          });
+        } else {
+          alert(`Game Over! Your high score is ${highScore}.`);
         }
+      }
+    } else {
+      // 如果Firebase初始化失敗,使用本地記錄
+      highScoreDisplay.textContent = `${highScore}`;
+
+      function gameOver() {
+        clearInterval(gameInterval);
+        alert(`Game Over! Your high score is ${highScore}.`);
+      }
     }
 
     function drawBoard() {
