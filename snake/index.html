@@ -157,6 +157,7 @@
     if (firebaseInitialized) {
       // 取得用戶的最高分數
       let username = sessionStorage.getItem('username') || 'Guest';
+      nameDisplay.textContent = username;
       const userRef = firebase.database().ref(`users/${username}/highScore`);
       userRef.once('value', (snapshot) => {
         if (snapshot.exists()) {
