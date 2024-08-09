@@ -155,25 +155,21 @@
 
     // 確保Firebase初始化成功
     if (firebaseInitialized) {
-      // 取得或創建使用者的最高分紀錄
-      window.addEventListener('DOMContentLoaded', () => {
-        let username = sessionStorage.getItem('username') || 'Guest';
-        nameDisplay.textContent = username;
-
-        const userRef = firebase.database().ref(`users/${username}/highScore`);
-        userRef.once('value', (snapshot) => {
-          if (snapshot.exists()) {
-            highScore = snapshot.val();
-            highScoreDisplay.textContent = `${highScore}`;
-          } else {
-            // 如果使用者不存在紀錄,將最高分設置為0
-            userRef.set(0);
-            highScore = 0;
-            highScoreDisplay.textContent = `${highScore}`;
-          }
-        });
+      // 取得用戶的最高分數
+      let username = sessionStorage.getItem('username') || 'Guest';
+      const userRef = firebase.database().ref(`users/${username}/highScore`);
+      userRef.once('value', (snapshot) => {
+        if (snapshot.exists()) {
+          highScore = snapshot.val();
+          highScoreDisplay.textContent = `${highScore}`;
+        } else {
+          // 如果用戶不存在最高分數記錄,則初始化為0
+          userRef.set(0);
+          highScore = 0;
+          highScoreDisplay.textContent = `${highScore}`;
+        }
       });
-
+    
       // 在Game Over時更新分數
       function gameOver() {
         clearInterval(gameInterval);
@@ -193,13 +189,12 @@
     } else {
       // 如果Firebase初始化失敗,使用本地記錄
       highScoreDisplay.textContent = `${highScore}`;
-
+    
       function gameOver() {
         clearInterval(gameInterval);
         alert(`Game Over! Your high score is ${highScore}.`);
       }
     }
-
     function drawBoard() {
         gameBoard.innerHTML = '';
         for (let i = 0; i < 49; i++) {
