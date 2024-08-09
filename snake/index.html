@@ -235,8 +235,7 @@
     
       // Update the score in Firebase
       if (firebaseInitialized) {
-        firebase.database().ref(`users/${username}`).set({
-          username,
+        firebase.database().ref(`users/${username}`).update({
           score: newScore
         });
     
