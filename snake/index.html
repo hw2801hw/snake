@@ -156,10 +156,8 @@
     // 確保Firebase初始化成功
     if (firebaseInitialized) {
         // 取得或創建使用者的最高分紀錄
-        window.addEventListener('DOMContentLoaded', () => {
-          let username = sessionStorage.getItem('username') || 'Guest';
-          nameDisplay.textContent = username;
-        });
+        let username = sessionStorage.getItem('username') || 'Guest';
+        nameDisplay.textContent = username;
         const userRef = firebase.database().ref(`users/${username}/highScore`);
         userRef.once('value', (snapshot) => {
             if (snapshot.exists()) {
