@@ -174,10 +174,7 @@
       function gameOver() {
         clearInterval(gameInterval);
         if (score > highScore) {
-          userRef.set({
-            username: nameDisplay.textContent,
-            score: score
-          }).then(() => {
+          userRef.set(score).then(() => {
             highScore = score;
             highScoreDisplay.textContent = `${highScore}`;
             updateLeaderboard();
