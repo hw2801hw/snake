@@ -175,54 +175,66 @@
       clearInterval(gameInterval);
       const username = nameDisplay.textContent;
       const newScore = score;
-
+    
       // 將新分數更新至 Firebase
       if (firebaseInitialized) {
-        // 將新分數更新至 Firebase
         firebase.database().ref(`users/${username}`).set({
           username,
           score: newScore
         });
-
-      // 從 Firebase 中獲取最新的用戶名和分數並更新排行榜
-      firebase.database().ref('users').once('value', (snapshot) => {
-        const data = snapshot.val();
-        const scores = data ? Object.values(data) : [];
-        scores.sort((a, b) => b.score - a.score);
-
-        const leaderboardBody = document.getElementById('leaderboard').getElementsByTagName('tbody')[0];
-        leaderboardBody.innerHTML = '';
-
-        scores.forEach((entry, index) => {
-          const row = document.createElement('tr');
-          const rankCell = document.createElement('td');
-          const usernameCell = document.createElement('td');
-          const scoreCell = document.createElement('td');
-
-          rankCell.textContent = `#${index + 1}`;
-          usernameCell.textContent = entry.username;
-          scoreCell.textContent = entry.score;
-
-          row.appendChild(rankCell);
-          row.appendChild(usernameCell);
-          row.appendChild(scoreCell);
-          leaderboardBody.appendChild(row);
-        });
-
-        let newHighScore = highScore;
-        scores.some((entry) => {
-          if (entry.score > newHighScore) {
-            newHighScore = entry.score;
-            return true;
-          }
-          return false;
-        });
-
-        highScore = newHighScore;
-        highScoreDisplay.textContent = `${highScore}`;
-      });
-
-      alert(`Game Over! Your high score is ${highScore}.`);
+    
+        // 從 Firebase 中獲取最新的用戶名和分數並更新排行榜
+        if (firebaseInitialized) {
+          firebase.database().ref('users').once('value', (snapshot) => {
+            const data = snapshot.val();
+            const scores = data ? Object.values(data) : [];
+            scores.sort((a, b) => b.score - a.score);
+    
+            const leaderboardBody = document.getElementById('leaderboard').getElementsByTagName('tbody')[0];
+            leaderboardBody.innerHTML = '';
+    
+            scores.forEach((entry, index) => {
+              const row = document.createElement('tr');
+              const rankCell = document.createElement('td');
+              const usernameCell = document.createElement('td');
+              const scoreCell = document.createElement('td');
+    
+              rankCell.textContent = `#${index + 1}`;
+              usernameCell.textContent = entry.username;
+              scoreCell.textContent = entry.score;
+    
+              row.appendChild(rankCell);
+              row.appendChild(usernameCell);
+              row.appendChild(scoreCell);
+              leaderboardBody.appendChild(row);
+            });
+    
+            // 確保Firebase初始化成功
+            if (firebaseInitialized) {
+              let newHighScore = highScore;
+              scores.some((entry) => {
+                if (entry.score > newHighScore) {
+                  newHighScore = entry.score;
+                  return true;
+                }
+                return false;
+              });
+    
+              highScore = newHighScore;
+              highScoreDisplay.textContent = `${highScore}`;
+            } else {
+              // 如果Firebase初始化失敗,則不更新最高分數
+              highScoreDisplay.textContent = `${highScore}`;
+            }
+          });
+        } else {
+          // 如果Firebase初始化失敗,則不進行任何Firebase相關操作
+          alert(`Game Over! Your high score is ${highScore}.`);
+        }
+      } else {
+        // 如果Firebase初始化失敗,則不進行任何Firebase相關操作
+        alert(`Game Over! Your high score is ${highScore}.`);
+      }
     }
 
     function drawBoard() {
